@@ -1,8 +1,7 @@
-Modo de análisis: time
-Intervalo: 79750 - 79800 s
+Mass	Integrated_Area
+11.80	1.298640e-09
+12.78	1.584646e-10
+15.75	9.273989e-10
+27.84	1.111616e-08
 
-Masa	Área_integrada
-17.72	5.788013e-06
-27.84	6.809760e-05
-31.81	6.665949e-07
-43.94	4.585087e-07
+Photon_Flux	2.296958e+16
