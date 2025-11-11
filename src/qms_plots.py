@@ -85,11 +85,80 @@ def plot_multiple_masses(data: dict, temp_key: str = "TempAK",
 
     ax.set_xlabel("Temperatura (K)")
     ax.set_ylabel("Intensidad (a.u.)")
+    ax.set_yscale("log")
     ax.set_title(title)
     ax.legend()
     plt.tight_layout()
 
     # Guardar o mostrar
+    if save_path:
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        plt.savefig(save_path, dpi=300)
+        print(f"Figura guardada en: {save_path}")
+
+    if show:
+        plt.show()
+    else:
+        plt.close(fig)
+
+# ===============================================================
+# VISUALIZACIÓN EN FUNCIÓN DEL TIEMPO
+# ===============================================================
+
+def plot_mass_signal_time(time: np.ndarray, signal: np.ndarray, mass: str,
+                          ax=None, label=None, linewidth=1.2, color=None):
+    """
+    Dibuja una sola señal de masa frente al tiempo.
+
+    Parámetros
+    ----------
+    time : np.ndarray
+        Tiempo (s).
+    signal : np.ndarray
+        Intensidad de la señal para una masa concreta.
+    mass : str
+        Nombre o valor de la masa (p.ej. '28.00').
+    """
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(7, 4))
+
+    label = label or f"Masa {mass}"
+    ax.plot(time, signal, label=label, lw=linewidth, color=color)
+    ax.set_xlabel("Tiempo (s)")
+    ax.set_ylabel("Intensidad (a.u.)")
+    ax.set_title("Señal QMS vs Tiempo")
+    return ax
+
+
+def plot_multiple_masses_time(data: dict, time_key: str = "TimesExp",
+                              masses=None, figsize=(8, 5),
+                              linewidth=1.2, save_path=None, show=True,
+                              title="Señales QMS (m/z vs Tiempo)"):
+    """
+    Grafica múltiples masas en una sola figura frente al tiempo.
+    """
+    if time_key not in data:
+        raise KeyError(f"No se encontró la columna de tiempo '{time_key}' en los datos.")
+
+    time = data[time_key]
+
+    if masses is None:
+        masses = [k for k in data.keys() if k.replace('.', '', 1).isdigit()]
+
+    fig, ax = plt.subplots(figsize=figsize)
+    for m in masses:
+        if m in data:
+            ax.plot(time, data[m], label=f"Masa {m}", lw=linewidth)
+        else:
+            print(f"[WARN] Masa {m} no encontrada en los datos.")
+
+    ax.set_xlabel("Tiempo (s)")
+    ax.set_ylabel("Intensidad (a.u.)")
+    ax.set_yscale("log")
+    ax.set_title(title)
+    ax.legend()
+    plt.tight_layout()
+
     if save_path:
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
         plt.savefig(save_path, dpi=300)

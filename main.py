@@ -1,38 +1,36 @@
 """
 main.py
 --------------------------------------------------------------------
-QMS Analysis — Mass Spectrometry (Quadrupole) Visualization & Integration Tool
+QMS_ice — Quadrupole Mass Spectrometry Analysis Tool
 
-Este script lee archivos del cuadrupolo de masas (QMS), representa las señales
-de las masas seleccionadas frente a la temperatura y calcula el área integrada
-bajo las curvas de desorción (TPD).
+Analiza señales del cuadrupolo de masas (QMS) obtenidas en experimentos
+de hielos astrofísicos. Puede operar en dos modos:
+  - 'temperature': análisis de TPD (vs temperatura)
+  - 'time': evolución temporal (vs tiempo)
 
-Desarrollado para el laboratorio de Astrofísica y Ciencias Planetarias.
 --------------------------------------------------------------------
 Author: Joaquín Delgado Amar
-Affiliation: Centro de Astrobiología (CAB), CSIC-INTA, España
-Date: 2025-11-03
+Affiliation: [Centro de Astrobiología (CAB), CSIC-INTA, Spain]
+Date: 2025-11-07
 --------------------------------------------------------------------
 """
 
 import os
-import numpy as np
-import matplotlib.pyplot as plt
 from src.qms_io import read_qms_file
-from src.qms_integrate import integrate_multiple_masses
-from src.qms_plots import plot_multiple_masses
+from src.qms_integrate import (
+    integrate_multiple_masses
+)
+from src.qms_plots import (
+    plot_multiple_masses,
+    plot_multiple_masses_time,
+)
 from src.qms_config import QMS_CONFIG
 
 
 def main(cfg: dict):
     """
     Flujo principal del análisis QMS.
-    1. Lee los datos desde archivo.
-    2. Grafica las masas seleccionadas.
-    3. Integra las áreas bajo las curvas de desorción.
-    4. Guarda los resultados si se indica.
     """
-
     qms_path = cfg["QMS_PATH"]
     print(f"📂 Cargando datos QMS desde: {qms_path}")
 
@@ -43,43 +41,67 @@ def main(cfg: dict):
     headers, data = read_qms_file(qms_path)
     print(f"✅ Archivo leído correctamente ({len(headers)} columnas).")
 
-    # --- Graficar ---
+    # === Determinar modo de análisis ===
+    mode = cfg.get("ANALYSIS_MODE", "time").lower()
+    if mode not in ["time", "temperature"]:
+        raise ValueError("ANALYSIS_MODE debe ser 'time' o 'temperature'.")
+
+    print(f"\n🔧 Modo de análisis seleccionado: {mode.upper()}")
+
+    # ===============================================================
+    # === PLOTEO DE SEÑALES ===
+    # ===============================================================
     if cfg.get("PLOT_SIGNALS", True):
         print("\n📊 Generando gráficos de las masas seleccionadas...")
-        plot_multiple_masses(
-            data,
-            temp_key=cfg["TEMP_KEY"],
-            masses=cfg["MASSES"],
-            figsize=cfg["FIGSIZE"],
-            linewidth=cfg["LINEWIDTH"],
-            save_path=cfg["PLOT_OUTPUT_FILE"] if cfg.get("SAVE_PLOTS") else None,
-            show=cfg.get("SHOW_PLOTS", True),
-            title=cfg["TITLE"]
-        )
+        if mode == "time":
+            plot_multiple_masses_time(
+                data,
+                time_key=cfg["TIME_KEY"],
+                masses=cfg["MASSES"],
+                figsize=cfg["FIGSIZE"],
+                linewidth=cfg["LINEWIDTH"],
+                save_path=cfg["PLOT_OUTPUT_FILE"] if cfg.get("SAVE_PLOTS") else None,
+                show=cfg.get("SHOW_PLOTS", True),
+                title=cfg["TITLE_TIME"]
+            )
+        else:
+            plot_multiple_masses(
+                data,
+                temp_key=cfg["TEMP_KEY"],
+                masses=cfg["MASSES"],
+                figsize=cfg["FIGSIZE"],
+                linewidth=cfg["LINEWIDTH"],
+                save_path=cfg["PLOT_OUTPUT_FILE"] if cfg.get("SAVE_PLOTS") else None,
+                show=cfg.get("SHOW_PLOTS", True),
+                title=cfg["TITLE_TEMP"]
+            )
 
-    # --- Integrar ---
+    # ===============================================================
+    # === INTEGRACIÓN ===
+    # ===============================================================
+
     if cfg.get("INTEGRATE_SIGNALS", True):
-        print("\n🧮 Calculando integrales de desorción...")
+        start, end = cfg["INTEGRATION_RANGE"]
+        print(f"\n🧮 Integrando señales entre {start} y {end} ({'s' if mode=='time' else 'K'})")
+
+        x_key = cfg["TIME_KEY"] if mode == "time" else cfg["TEMP_KEY"]
+
         results = integrate_multiple_masses(
             data,
-            temp_key=cfg["TEMP_KEY"],
-            mass_keys=cfg["MASSES"]
+            x_key=x_key,
+            mass_keys=cfg["MASSES"],
+            integration_range=(start, end),
+            save_dir="results/integrations",
+            correct_baseline=True,
+            show_plots=cfg.get("SHOW_PLOTS", False),
+            save_plots=cfg.get("SAVE_PLOTS", True),
+            xlabel="Tiempo (s)" if mode == "time" else "Temperatura (K)",
+            ylabel="Intensidad (a.u.)"
         )
 
         print("\nResultados de integración (área bajo la curva):")
         for m, area in results.items():
             print(f"  • Masa {m}: {area:.4e}")
-
-        # --- Guardar resultados ---
-        if cfg.get("SAVE_INTEGRATION_RESULTS", True):
-            out_path = cfg["INTEGRATION_RESULTS_FILE"]
-            os.makedirs(os.path.dirname(out_path), exist_ok=True)
-            with open(out_path, "w", encoding="utf-8") as f:
-                f.write("Masa\tÁrea_integrada\n")
-                for m, area in results.items():
-                    f.write(f"{m}\t{area:.6e}\n")
-            print(f"\n💾 Resultados guardados en: {out_path}")
-
 
 # ===============================================================
 #  EJECUCIÓN PRINCIPAL

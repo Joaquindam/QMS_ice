@@ -1,18 +1,26 @@
 """
 Configuración general para el análisis de datos del cuadrupolo de masas (QMS).
-Define rutas, masas de interés y parámetros de visualización.
+Define rutas, masas de interés, parámetros de visualización e integración.
 """
 
-# === CONFIGURACIÓN PRINCIPAL ===
 QMS_CONFIG = {
-    # Ruta al archivo o carpeta con los datos QMS
-    "QMS_PATH": r"C:\Users\Usuario\Documents\CAB\20251023_CO_irr_TPD\20251023_CO_irr_TPD_QMS.txt",
+    # === Entrada de datos ===
+    "QMS_PATH": r"C:\Users\Usuario\Documents\CAB\20251023_CO_irr_TPD\20251022_prueba-Synchro_QMS_ASPER.dat",
 
-    # Columna de temperatura
+    # Claves de columnas
+    "TIME_KEY": "TimesExp",
     "TEMP_KEY": "TempAK",
 
-    # Masas que queremos analizar (None para todas)
-    "MASSES": ["18.00", "28.00", "32.00", "44.00"],
+    # Masas de interés (None para todas)
+    "MASSES": ["17.72", "27.84", "31.81", "43.94"],
+
+    # === Tipo de análisis ===
+    # Puede ser "temperature" (TPD) o "time" (experimento temporal)
+    "ANALYSIS_MODE": "time",
+
+    # === Rango de integración ===
+    # Intervalo [inicio, fin] en segundos o Kelvin, según ANALYSIS_MODE
+    "INTEGRATION_RANGE": (85000, 90000),
 
     # === Opciones de integración ===
     "INTEGRATE_SIGNALS": True,
@@ -28,5 +36,6 @@ QMS_CONFIG = {
 
     # === Estilo ===
     "LINEWIDTH": 1.2,
-    "TITLE": "Señales QMS (m/z vs Temperatura)"
+    "TITLE_TIME": "Señales QMS (m/z vs Tiempo)",
+    "TITLE_TEMP": "Señales QMS (m/z vs Temperatura)",
 }

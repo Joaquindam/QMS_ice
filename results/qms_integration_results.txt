@@ -1,0 +1,8 @@
+Modo de análisis: time
+Intervalo: 79750 - 79800 s
+
+Masa	Área_integrada
+17.72	5.788013e-06
+27.84	6.809760e-05
+31.81	6.665949e-07
+43.94	4.585087e-07
