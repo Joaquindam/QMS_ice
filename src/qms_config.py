@@ -1,41 +1,51 @@
 """
-Configuración general para el análisis de datos del cuadrupolo de masas (QMS).
-Define rutas, masas de interés, parámetros de visualización e integración.
+General configuration for the Quadrupole Mass Spectrometry (QMS) analysis.
+Defines file paths, target masses, visualization parameters, and integration settings.
 """
 
 QMS_CONFIG = {
-    # === Entrada de datos ===
+    # === INPUT SETTINGS ===
+    # Path to the QMS data file (ASCII format).
     "QMS_PATH": r"C:\Users\Usuario\Documents\CAB\20251023_CO_irr_TPD\20251022_prueba-Synchro_QMS_ASPER.dat",
 
-    # Claves de columnas
-    "TIME_KEY": "TimesExp",
-    "TEMP_KEY": "TempAK",
+    # Column identifiers
+    "TIME_KEY": "TimesExp",         # Experimental time (s)
+    "TEMP_KEY": "TempAK",           # Temperature (K)
 
-    # Masas de interés (None para todas)
+    # === MASSES OF INTEREST ===
+    # Define which masses (m/z) to analyze. If None, all available masses will be processed.
+    # Typical masses detected:
+    # 0.91, 1.91, 11.80, 12.78, 13.77, 14.76, 15.75, 16.74, 17.72, 18.73, 19.74,
+    # 23.79, 24.80, 27.84, 28.84, 29.83, 30.82, 31.81, 32.82, 33.83, 34.84, 35.85,
+    # 39.89, 43.94, 44.94, 45.94, 46.94, 47.94, 48.94, 49.94, 59.94, 62.94, 63.94,
+    # 64.95, 66.00, 76.00, 77.00, 78.00, 80.00, 81.00, 82.00, 96.00, 128.00, 150.00
     "MASSES": ["17.72", "27.84", "31.81", "43.94"],
 
-    # === Tipo de análisis ===
-    # Puede ser "temperature" (TPD) o "time" (experimento temporal)
+    # === ANALYSIS MODE ===
+    # Choose between:
+    #   "temperature": TPD-type experiments (signal vs Temperature)
+    #   "time": Temporal evolution (signal vs Time)
     "ANALYSIS_MODE": "time",
 
-    # === Rango de integración ===
-    # Intervalo [inicio, fin] en segundos o Kelvin, según ANALYSIS_MODE
+    # === INTEGRATION RANGE ===
+    # Integration interval [start, end] in seconds or Kelvin,
+    # depending on the selected ANALYSIS_MODE.
     "INTEGRATION_RANGE": (85000, 90000),
 
-    # === Opciones de integración ===
-    "INTEGRATE_SIGNALS": True,
-    "SAVE_INTEGRATION_RESULTS": True,
+    # === INTEGRATION OPTIONS ===
+    "INTEGRATE_SIGNALS": True,                       # Perform integration
+    "SAVE_INTEGRATION_RESULTS": True,                # Save integrated areas to file
     "INTEGRATION_RESULTS_FILE": "results/qms_integration_results.txt",
 
-    # === Opciones de ploteo ===
-    "PLOT_SIGNALS": True,
-    "SHOW_PLOTS": True,
-    "SAVE_PLOTS": True,
+    # === PLOTTING OPTIONS ===
+    "PLOT_SIGNALS": True,                            # Plot all selected mass signals
+    "SHOW_PLOTS": True,                              # Display plots interactively
+    "SAVE_PLOTS": True,                              # Save plots to disk
     "PLOT_OUTPUT_FILE": "results/qms_signals.png",
     "FIGSIZE": (8, 5),
 
-    # === Estilo ===
+    # === STYLE SETTINGS ===
     "LINEWIDTH": 1.2,
-    "TITLE_TIME": "Señales QMS (m/z vs Tiempo)",
-    "TITLE_TEMP": "Señales QMS (m/z vs Temperatura)",
+    "TITLE_TIME": "QMS Signals (m/z vs Time)",
+    "TITLE_TEMP": "QMS Signals (m/z vs Temperature)",
 }
