@@ -36,7 +36,7 @@ QMS_CONFIG = {
     # === INTEGRATION RANGE ===
         # Integration interval [start, end] in minutes or Kelvin,
         # depending on the selected ANALYSIS_MODE.
-        "INTEGRATION_RANGE": (1494, 1500),
+        "INTEGRATION_RANGE": (1370.4, 1376.8),
 
     # === INTEGRATION OPTIONS ===
         "INTEGRATE_SIGNALS": True,                       # Perform integration

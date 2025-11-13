@@ -65,7 +65,7 @@ def integrate_signal(
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
         ax.set_yscale('log')
-        ax.set_xlim(x_min / 60.0, x_max / 60.0)
+        ax.set_xlim(x_min / 60.0-2, x_max / 60.0+2)
         ax.set_ylim(min(y_region.min(), baseline.min())*0.9, max(y_region.max(), baseline.max())*1.1)
         ax.set_title(title)
         ax.legend(frameon=False)
