@@ -18,6 +18,25 @@ The tool can:
 
 ---
 
+## Installation
+
+1. **Clone the repository**
+   
+   git clone https://github.com/Joaquindam/QMS_ice.git
+   cd qms_ice
+
+2. **(Optional) Create a virtual environment**
+
+    python -m venv venv
+    source venv/bin/activate   # macOS / Linux
+    venv\Scripts\activate      # Windows
+
+3. **Install dependencies**
+
+    pip install -r requirements.txt
+
+---
+
 ## Features
 
 - Read QMS data from ASCII-formatted `.dat` files  
