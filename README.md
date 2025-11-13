@@ -22,14 +22,14 @@ The tool can:
 
 1. **Clone the repository**
    
-   git clone https://github.com/Joaquindam/QMS_ice.git
-   cd qms_ice
+   - git clone https://github.com/Joaquindam/QMS_ice.git
+   - cd qms_ice
 
 2. **(Optional) Create a virtual environment**
 
-    python -m venv venv
-    source venv/bin/activate   # macOS / Linux
-    venv\Scripts\activate      # Windows
+    - python -m venv venv
+    - source venv/bin/activate   # macOS / Linux
+    - venv\Scripts\activate      # Windows
 
 3. **Install dependencies**
 
